@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Daftar Hadir Kelas 9H</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: linear-gradient(135deg, #ff7e5f, #feb47b, #ff6fd8, #3813c2);
+      background-size: 400% 400%;
+      animation: gradientBG 10s ease infinite;
+      color: #333;
+    }
+
+    @keyframes gradientBG {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
+
+    h2, h3 {
+      text-align: center;
+      color: white;
+      text-shadow: 1px 1px 2px #000;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-bottom: 20px;
+      background-color: rgba(255,255,255,0.9);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    select {
+      padding: 5px;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #6c5ce7;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      display: block;
+      margin: 0 auto;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #341f97;
+    }
+
+    #hasilTable {
+      margin-top: 30px;
+    }
+
+    #outputTable th {
+      background-color: #dff0d8;
+    }
+  </style>
+</head>
+<body>
+  <h2>Daftar Hadir Kelas 9H - Tahun Ajaran 2025/2026</h2>
+  <form id="absenForm">
+    <table>
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>NIS</th>
+          <th>Nama</th>
+          <th>Keterangan (H/S/A)</th>
+        </tr>
+      </thead>
+      <tbody id="siswaTableBody">
+        <!-- Diisi lewat JavaScript -->
+      </tbody>
+    </table>
+    <button type="submit">Kirim Absen</button>
+  </form>
+
+  <div id="hasilTable">
+    <h3>Hasil Absen:</h3>
+    <table id="outputTable" style="display:none;">
+      <thead>
+        <tr>
+          <th>NIS</th>
+          <th>Nama</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    const siswa = [
+      [1, 6702, "ACHMAD MAULANA"],
+      [2, 6736, "ACHMAD YASIN SAYFUL GANIE"],
+      [3, 6704, "AHMAD FADLAN AR RIFANI"],
+      [4, 6737, "AKBITA NURLEVANTY"],
+      [5, 6590, "AQEELA KIRANA RIZKYA"],
+      [6, 6593, "ARDELIO RYANO"],
+      [7, 6708, "ASHFYA QHUMAYROH"],
+      [8, 6757, "ASTIN BENAYA UBA"],
+      [9, 6753, "DWIINA ARIANTI SHOLEHA"],
+      [10, 6486, "ERISYA NUR AZKIYA"],
+      [11, 6754, "ERLETA NSWARYUDI"],
+      [12, 6705, "FADZA AL MIRA"],
+      [13, 6759, "INTAN LISTIA RAHMA"],
+      [14, 6743, "IKHLAIRI"],
+      [15, 6660, "A.M. ILMI RAMADHANI"],
+      [16, 6883, "M. RISWANDIA SYAHIRZA"],
+      [17, 6671, "M. SIRAJI JAYA"],
+      [18, 6706, "MUHAMMAD DAFFA"],
+      [19, 6750, "MUHAMMAD DILI ARIF JAZULI"],
+      [20, 6760, "MUHAMMAD HAFEZ"],
+      [21, 6655, "MUHAMMAD IKMAL ABIDZAR AKBAR"],
+      [22, 6661, "MUHAMMAD RAIHAN NUGRAHA"],
+      [23, 6591, "MUHAMMAD SURYA PANGESTU"],
+      [24, 6756, "MUTIARA KHADIJAH"],
+      [25, 6709, "NABILLA HUMAIROH"],
+      [26, 6764, "NADIA AMALIA"],
+      [27, 6762, "NAILA YUNTA"],
+      [28, 6799, "NUR NAILA"],
+      [29, 7122, "NUR ZAHRA AULIA SAPUTRI"],
+      [30, 6701, "NURKAIANA JUMAIDA"],
+      [31, 6763, "RAKA FADHILLA"],
+      [32, 6662, "RANIA AZZAHRA MIRJANI"],
+      [33, 6831, "RASYA NUR KHAIFI"],
+      [34, 8655, "RISKY AKBAR"],
+      [35, 3665, "SALWA GHINA PUTRI"],
+      [36, 8657, "TASYA LATHIFA HUMAYRA"]
+    ];
+
+    const tbody = document.getElementById("siswaTableBody");
+
+    siswa.forEach(([no, nis, nama]) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${no}</td>
+        <td>${nis}</td>
+        <td>${nama}</td>
+        <td>
+          <select name="absen" data-nis="${nis}" data-nama="${nama}">
+            <option value="">--</option>
+            <option value="H">H</option>
+            <option value="S">S</option>
+            <option value="A">A</option>
+          </select>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    document.getElementById("absenForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const selected = [...document.querySelectorAll("select[name='absen']")]
+        .map(select => ({
+          nis: select.getAttribute("data-nis"),
+          nama: select.getAttribute("data-nama"),
+          status: select.value
+        }))
+        .filter(d => d.status !== "");
+
+      const outputTable = document.getElementById("outputTable");
+      const outputBody = outputTable.querySelector("tbody");
+      outputBody.innerHTML = "";
+      selected.forEach(({ nis, nama, status }) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${nis}</td><td>${nama}</td><td>${status}</td>`;
+        outputBody.appendChild(row);
+      });
+      outputTable.style.display = "table";
+
+      const csvContent = "NIS,Nama,Status\n" + selected.map(d => `${d.nis},${d.nama},${d.status}`).join("\n");
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      link.setAttribute("href", URL.createObjectURL(blob));
+      link.setAttribute("download", "absensi_kelas_9H.csv");
+      link.style.display = "none";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
+  </script>
+</body>
+</html>
